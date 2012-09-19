@@ -65,6 +65,7 @@ typedef struct
   time_t    modified;
   BOOLEAN   cached;
   char      *etag;
+  char      *headers;
 } URL;
 
 int      protocol_length(char *url); 

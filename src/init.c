@@ -57,7 +57,7 @@ init_config( void )
     }
   } 
 
-  my.debug          = FALSE;
+  my.debug          = TRUE;
   my.internet       = FALSE;
   my.config         = FALSE;
   my.cookies        = TRUE;

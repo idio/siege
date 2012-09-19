@@ -160,7 +160,7 @@ http_get(CONN *C, URL *U)
   }
 
   /* Only send the Host header if one wasn't provided. */
-  if(strncasestr(my.extra, "host:", sizeof(my.extra)) == NULL){
+  if(strncasestr(U->headers, "host:", sizeof(U->headers)) == NULL){
     rlen = snprintf(hoststr, sizeof(hoststr), "Host: %s%s\015\012", U->hostname, portstr);
   }
 
@@ -179,7 +179,7 @@ http_get(CONN *C, URL *U)
     "Accept: */*\015\012"                  /*             */
     "Accept-Encoding: %s\015\012"          /* my.encoding */
     "User-Agent: %s\015\012"               /* my uagent   */
-    "%s"                                   /* my.extra    */
+    "%s\015\012"                                   /* my.extra    */
     "Connection: %s\015\012\015\012",      /* keepalive   */
     fullpath, protocol, hoststr,
     (C->auth.www==TRUE)?authwww:"",
@@ -187,7 +187,7 @@ http_get(CONN *C, URL *U)
     (strlen(cookie) > 8)?cookie:"", 
     (ifmod!=NULL)?ifmod:"",
     (ifnon!=NULL)?ifnon:"",
-    my.encoding, my.uagent, my.extra, keepalive 
+    my.encoding, my.uagent, U->headers, keepalive 
   );
  
   if(my.debug || my.get){ printf("%s\n", request); fflush(stdout); }

@@ -319,12 +319,26 @@ process_post_data(URL *U, char *datap)
   return;
 }
 
+void
+process_headers(URL *U, char *datap)
+{
+  for(; isspace((unsigned int)*datap); datap++){
+    /* Advance past white space */
+  }
+
+  sprintf (datap, datap, "\015\012");
+  U->headers = xstrdup(datap);
+
+  return;
+}
+
 URL *
 build_url(char *url, int defaultport, int id)
 {
   URL *U;                  /* defined in setup.h        */
   int mark[4] = {0,0,0,0}; /* placement counters.       */
   char *post_cmd=NULL;     /* POST directive for server */
+  char *headers=NULL;
   char *tmp;
 
   U = xcalloc(sizeof(URL), 1);
@@ -347,6 +361,18 @@ build_url(char *url, int defaultport, int id)
     U->posttemp   = NULL;
     U->postlen    = 0;
   }
+
+  headers = strstr(url, " HEADERS");
+
+  if (headers != NULL) {
+    *headers = 0;
+    headers += 9;
+    process_headers(U, headers);
+  } else {
+    U->headers = NULL;
+  }
+
+  printf("Headers found were %s\n", U->headers);
 
   if ((mark[0] = protocol_length(url)) > 0 && is_supported(url) == TRUE) {
     mark[0] += 2;
